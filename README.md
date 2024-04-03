@@ -3,7 +3,7 @@
 
 I got sick of trading one simplicity for another complexity.
 
-This is a single full-stack server that uses `bun` runtime. Vite's bundler and HMR features are served by the same `bun` backend.
+This is a single full-stack server that uses `bun` runtime. Vite's bundler and HMR features are served by the same `bun` backend, so it doesn't use any external commands or scripts.
 
 # Instructions
 - `bun dev` for hot reloads and source maps.
