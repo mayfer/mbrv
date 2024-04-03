@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Greeting } from 'shared/types';
 import { MainProps } from 'shared/main_props';
-import { Button, Card, Code, Container, Title, Title2 } from './Elements';
+import { Button, Card, InnerCard, Code, Container, Title, Title2 } from './Elements';
+import io from 'socket.io-client';
 // @ts-ignore
 import logo from './assets/picnic.svg';
 
@@ -9,6 +10,14 @@ function App(mainProps: MainProps) {
   const greeting = mainProps.greeting;
   const [serverGreeting, setServerGreeting] = useState<Greeting>(greeting);
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    // setup socket.io
+    const socket = io();
+    socket.on('connect', () => {
+      console.log('connected to socket.io');
+    });
+  }, []);
 
   return (
     <Container>
@@ -54,23 +63,33 @@ function App(mainProps: MainProps) {
           <li>Express router in <Code>server/http.ts</Code></li>
           <li>Socket.io setup in <Code>server/sockets.ts</Code></li>
         </ul>
+        <InnerCard>
+          <Title2>Instructions</Title2>
+          <ul>
+            <li><Code>bun dev</Code> provides hot reloads & source maps</li>
+            <li><Code>bun prod</Code> builds & serves production</li>
+            <li><Code>bun run.ts</Code> to run without any build process</li>
+          </ul>
+        </InnerCard>
       </Card>
-      <div>
-      {!loading ? (
-        <>
-          SSR & <Button onClick={async () => {
-            setLoading(true);
-            const res = await fetch("/api/props");
-            const { greeting } = await res.json() as MainProps;
 
-            setServerGreeting(greeting);
-            setLoading(false);
-          }}>/api/state</Button> say:
-        </>
-      ) : (
-        "Loading..."
-      )}{' '}{serverGreeting?.text} 
-      </div>
+      <Card>
+        
+            <Title2>Test the HTTP API & SSR:</Title2>
+            <Button onClick={async () => {
+              setLoading(true);
+              const res = await fetch("/api/props");
+              const { greeting } = await res.json() as MainProps;
+
+              setServerGreeting(greeting);
+              setLoading(false);
+            }}>Fetch clock from server</Button>
+            {loading && <span> Loading...</span>}
+
+            <br />
+            Response: "{serverGreeting?.text}"
+
+      </Card>
     </Container>
   );
 }

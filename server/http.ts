@@ -7,7 +7,8 @@ import nocache from "nocache";
 import express from "express";
 import { getMainProps } from "server/ssr_state";
 
-export function setup_routes(app: any) {
+// socket.io context can be used to push messages from api routes
+export function setup_routes(app: any, io: any) {
     app.use(cors());
     app.use(express.json());
     app.use(cookieParser());

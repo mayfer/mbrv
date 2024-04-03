@@ -6,9 +6,10 @@ export const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
   font-family: monospace;
   background-color: #f0f0f0;
+  line-height: 1.6;
 `;
 
 export const Title = styled.h1`
@@ -29,15 +30,33 @@ export const Card = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   min-width: 500px;
-  min-height: 200px;
   max-width: 800px;
   margin-bottom: 1rem;
 `;
 
+export const InnerCard = styled.div`
+    background-color: #ffe;
+    color: #333;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    `;
+
 export const Button = styled.span`
-  text-decoration: underline;
+  background-color: #f0f0ff;
+  padding: 0.5rem 1rem;
+  margin: 5px 0;
+  border-radius: 4px;
+  display: inline-block;
   color: blue;
   cursor: pointer;
+
+    &:hover {
+        background-color: #e0e0ff;
+    }
+    &:active {
+        background-color: #d0d0ff;
+    }
 `;
 
 export const Paragraph = styled.p`

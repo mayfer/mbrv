@@ -6,7 +6,5 @@ import App from './App.tsx'
 const initial_state = window.__INITIAL_STATE__
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App greeting={initial_state.greeting} />
-  </React.StrictMode>,
+  <App greeting={initial_state.greeting} />
 )

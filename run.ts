@@ -3,8 +3,8 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import args from "server/args";
-import { setup_routes } from "server/routes";
-
+import { setup_routes } from "server/http";
+import { setup_sockets } from "server/sockets";
 
 import fs from 'fs'
 import path from 'path'
@@ -21,6 +21,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 async function createServer() {
   const app = express()
 
+
   // Create Vite server in middleware mode and configure the app type as
   // 'custom', disabling Vite's own HTML serving logic so parent server
   // can take control
@@ -34,20 +35,21 @@ async function createServer() {
         base: '/',
   })
 
-  // start socket.io server on same server instance
-  const socket_server = http.createServer(app);
-  const io = new Server(socket_server, {
-    // cors: {
-    //   origin: '*',
-    // },
-  });
-  setup_routes(app);
-
   if (mode === 'production') {
     app.use('/client', express.static(path.resolve(__dirname, 'client')))
     app.use('/dist', express.static(path.resolve(__dirname, 'dist')))
     app.use('/dist/client', express.static(path.resolve(__dirname, 'client')))
   }
+
+  // start socket.io server on same server instance
+  const http_server = http.createServer(app);
+  const io = new Server(http_server, {
+    // cors: {
+    //   origin: '*',
+    // },
+  });
+  setup_sockets(io);
+  setup_routes(app, io);
 
   // Use vite's connect instance as middleware. If you use your own
   // express router (express.Router()), you should use router.use
@@ -61,7 +63,7 @@ async function createServer() {
     // remove leading slashes
     cleaned_url = cleaned_url.replace(/^\/+/, '')
 
-    const allowed_prefixes = ['client', 'shared', 'node_modules'];
+    const allowed_prefixes = ['client', 'shared', 'node_modules', 'socket.io'];
     if (cleaned_url == '' || allowed_prefixes.some(prefix => cleaned_url.startsWith(prefix))) {
       return next();
     } else {
@@ -135,7 +137,7 @@ async function createServer() {
     }
   })
 
-  app.listen(port, () => {
+  http_server.listen(port, () => {
     console.log(`Server listening on http://localhost:${port}`)
   })
 
