@@ -1,4 +1,4 @@
-# MBRV: Murat's Bun, React & Vite template
+# [MBRV](https://mbrv.org): Murat's Bun, React & Vite template
 by [murat](https://twitter.com/mayfer)
 
 # Intro
