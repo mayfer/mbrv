@@ -11,7 +11,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { createServer as createViteServer } from 'vite'
 
-import { getMainProps } from "server/ssr_state";
+import { getMainProps } from "server/ssr_props";
 
 const port = args.port;
 const mode = args.mode;
