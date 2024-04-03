@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Greeting } from 'shared/types';
+import { Greeting, SocketTester } from 'shared/types';
 import { MainProps } from 'shared/main_props';
 import { Button, Card, InnerCard, Code, Container, Title, Title2 } from './Elements';
 import io from 'socket.io-client';
@@ -10,6 +10,7 @@ function App(mainProps: MainProps) {
   const greeting = mainProps.greeting;
   const [serverGreeting, setServerGreeting] = useState<Greeting>(greeting);
   const [loading, setLoading] = useState<boolean>(false);
+  const [count, setCount] = useState<number>(0);
 
   useEffect(() => {
     // setup socket.io
@@ -17,6 +18,14 @@ function App(mainProps: MainProps) {
     socket.on('connect', () => {
       console.log('connected to socket.io');
     });
+
+    socket.on('test', (data: SocketTester) => {
+      setCount(data.counter);
+    });
+
+    return () => {
+      socket.disconnect();
+    }
   }, []);
 
   return (
@@ -54,7 +63,7 @@ function App(mainProps: MainProps) {
 
         <Title2>Sane server-side rendering</Title2>
         <ul>
-          <li>SSR is done with explicit code, no framework magic required</li>
+          <li>SSR is done with explicit code, no framework magic</li>
           <li>Enabled by default, with entry point in <Code>server/ssr.tsx</Code></li>
         </ul>
 
@@ -89,6 +98,9 @@ function App(mainProps: MainProps) {
             <br />
             Response: "{serverGreeting?.text}"
 
+          <br /><br />
+          <Title2>Test Socket.io:</Title2>
+          Counter: {count}
       </Card>
     </Container>
   );

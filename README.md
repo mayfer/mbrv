@@ -1,26 +1,35 @@
 # MBRV
-## Murat's Bun, React, Vite template
+## Murat's Bun + React + Vite template
 
 I got sick of trading one simplicity for another complexity.
 
-This is a single server that uses `bun` runtime. Vite's bundler and HMR features are served by the same `bun` backend.
+This is a single full-stack server that uses `bun` runtime. Vite's bundler and HMR features are served by the same `bun` backend.
+
+# Instructions
+- `bun dev` for hot reloads and source maps.
+- `bun prod` to build and serve the application.
+- `bun run.ts` to run the application without a build step.
 
 
-## Features
+## Single Port Convenience
+- Server and client run on the same port, simplifying setup.
+- Eliminates common network configuration issues like CORS or the need for proxies.
 
-- **Bun's flexibility**
-  - Speed aside, `bun` makes it easy to run TypeScript, JavaScript, CommonJS, modules, etc all in one codebase.
-- **Single Port Convenience**
-  - Both frontend and backend run on the same port. No CORS issues, no proxies.
-  - Server-side rendering is ready and explicit, no framework magic required.
-- **Hot Module Reloads (HMR)**
-  - Saving files in `client/` will apply React changes without losing state.
-  - Saving files in `server/` or `shared/` will reload the server.
-- **Shared Codebase**
-  - The `shared/` folder allows for sharing interfaces, types, and functions between the server and client.
-- **Familiar routes**
-  - Uses express
+## Bun's Flexibility
+- Runs TypeScript directly without a separate transpiler, streamlining development.
+- Utilizes `run.ts` as a straightforward entry point.
 
-## Getting Started
+## React Hot Module Reloads (HMR)
+- Facilitates immediate UI updates upon saving changes in `App.tsx`.
+- Server-side code in `server/` or `shared/` directories auto-reloads with `nodemon`, enhancing development flow.
 
-**Running the Development Server**: Simply execute `bun dev` to start both frontend and backend on the same port.
+## Shared Files
+- Supports code reuse across server and client through a shared folder (`shared/`) for common interfaces, types, and functions.
+
+## Sane Server-Side Rendering (SSR)
+- Implements SSR with explicit code rather than framework magic, via `server/ssr.tsx`.
+- Offers clear understanding and control over the rendering process.
+
+## Express & Socket.io Integration
+- Incorporates Express for routing in `server/http.ts`.
+- Uses Socket.io for real-time communication in `server/sockets.ts`.
