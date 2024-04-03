@@ -32,6 +32,7 @@ function App(mainProps: MainProps) {
     <Container>
       <img src={logo} height="100" /><br />
       <Title2>Murat's Bun, React & Vite template</Title2>
+      <Title2><a href='https://github.com/mayfer/mbrv'>Clone on GitHub</a></Title2>
       <Title>MBRV</Title>
       <Card>
         <Title2>Single port convenience</Title2>
@@ -75,6 +76,8 @@ function App(mainProps: MainProps) {
         <InnerCard>
           <Title2>Instructions</Title2>
           <ul>
+            <li><a href='https://github.com/mayfer/mbrv'>Clone on GitHub</a> & run <Code>bun install</Code></li>
+            <li>Make application-specific changes in <Code>client/</Code>, <Code>shared/</Code> & <Code>server/</Code> dirs</li>
             <li><Code>bun dev</Code> provides hot reloads & source maps</li>
             <li><Code>bun prod</Code> builds & serves production</li>
             <li><Code>bun run.ts</Code> to run without any build process</li>

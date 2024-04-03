@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --exec 'bun run.ts --port=4000' --watch server --watch shared --ext ts,tsx,js,mjs,json",
     "build": "vite build",
-    "prod": "vite build && bun run.ts --port=4000 --mode=production",
+    "prod": "vite build && bun run.ts --port=7044 --mode=production",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
@@ -38,6 +38,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "typescript": "^5.2.2",
-    "vite": "^5.2.7"
+    "vite": "^5.2.8"
   }
 }
