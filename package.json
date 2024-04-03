@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --exec 'bun run.ts' --watch server --watch shared --ext ts,tsx,js,mjs,json",
+    "dev": "nodemon --exec 'bun run.ts --port=4000' --watch server --watch shared --ext ts,tsx,js,mjs,json",
     "build": "vite build",
-    "prod": "vite build && bun run.ts --mode=production",
+    "prod": "vite build && bun run.ts --port=4000 --mode=production",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
