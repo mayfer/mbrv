@@ -14,6 +14,7 @@ import { createServer as createViteServer } from 'vite'
 import { getMainProps } from "server/ssr_state";
 
 const port = args.port;
+const mode = args.mode;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -28,8 +29,9 @@ async function createServer() {
         appType: 'custom',
         server: {
           middlewareMode: true,
-          hmr: true,
+          hmr: mode === 'development',
         },
+        base: '/',
   })
 
   // start socket.io server on same server instance
@@ -40,6 +42,12 @@ async function createServer() {
     // },
   });
   setup_routes(app);
+
+  if (mode === 'production') {
+    app.use('/client', express.static(path.resolve(__dirname, 'client')))
+    app.use('/dist', express.static(path.resolve(__dirname, 'dist')))
+    app.use('/dist/client', express.static(path.resolve(__dirname, 'client')))
+  }
 
   // Use vite's connect instance as middleware. If you use your own
   // express router (express.Router()), you should use router.use
@@ -69,7 +77,9 @@ async function createServer() {
     // next()
   })
 
-  app.use(vite.middlewares)
+  if(mode === 'development') {
+    app.use(vite.middlewares)
+  }
 
   app.use('*', async (req, res, next) => {
     const url = req.originalUrl
@@ -78,14 +88,17 @@ async function createServer() {
     try {
       // 1. Read index.html
       let template = fs.readFileSync(
-        path.resolve(__dirname, './index.html'),
+        // path.resolve(__dirname, './index.html'),
+        path.resolve(__dirname, mode === 'production' ? './dist/index.html' : './index.html'),
         'utf-8',
       )
   
       // 2. Apply Vite HTML transforms. This injects the Vite HMR client,
       //    and also applies HTML transforms from Vite plugins, e.g. global
       //    preambles from @vitejs/plugin-react
-      template = await vite.transformIndexHtml(url, template)
+      if(mode === 'development') {
+        template = await vite.transformIndexHtml(url, template)
+      }
   
       // 3a. Load the server entry. ssrLoadModule automatically transforms
       //    ESM source code to be usable in Node.js! There is no bundling
