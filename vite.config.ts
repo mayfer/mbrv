@@ -7,5 +7,14 @@ const mode = "production";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/dist/'
+  base: '/client/',
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: `[name].js`,
+        chunkFileNames: `[name].js`,
+        assetFileNames: `assets/[name].[ext]`
+      }
+    }
+  }
 })

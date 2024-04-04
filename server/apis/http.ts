@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import cors from 'cors';
 import nocache from "nocache";
 import express from "express";
-import { getMainProps } from "server/ssr_props";
+import { getMainProps } from "server/main_props";
 
 // socket.io context can be used to push messages from api routes
 export function setup_routes(app: any, io: any) {

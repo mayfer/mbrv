@@ -1,17 +1,18 @@
 
 import express from "express";
+import compression from "compression";
 import http from "http";
 import { Server } from "socket.io";
 import args from "server/args";
-import { setup_routes } from "server/http";
-import { setup_sockets } from "server/sockets";
+import { setup_routes } from "server/apis/http";
+import { setup_sockets } from "server/apis/sockets";
 
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { createServer as createViteServer } from 'vite'
 
-import { getMainProps } from "server/ssr_props";
+import { getMainProps } from "server/main_props";
 
 const port = args.port;
 const mode = args.mode;
@@ -20,7 +21,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 async function createServer() {
   const app = express()
-
+  app.use(compression());
 
   // Create Vite server in middleware mode and configure the app type as
   // 'custom', disabling Vite's own HTML serving logic so parent server
@@ -36,9 +37,7 @@ async function createServer() {
   })
 
   if (mode === 'production') {
-    app.use('/client', express.static(path.resolve(__dirname, 'client')))
-    app.use('/dist', express.static(path.resolve(__dirname, 'dist')))
-    app.use('/dist/client', express.static(path.resolve(__dirname, 'client')))
+    app.use('/client', express.static(path.resolve(__dirname, 'dist')))
   }
 
   // start socket.io server on same server instance
