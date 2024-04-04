@@ -3,9 +3,9 @@ by [murat](https://twitter.com/mayfer)
 
 # Intro
 
-I got sick of trading one simplicity for another complexity.
+Most TypeScript bundlers that support UI hot reloads require running server & client on different processes/ports, leading to a cascade of problems.
 
-This is a single full-stack TypeScript boilerplate that runs on `bun`. Vite's bundler and HMR features are served by the same `bun` backend, so it doesn't use any external commands or scripts.
+MBRV runs on a single `bun` process without sacrificing dev or prod features, such as hot reloads or server-side rendering.
 
  * `bun dev` provides hot reloads & source maps
  * `bun prod` builds & serves production
@@ -19,7 +19,7 @@ This is a single full-stack TypeScript boilerplate that runs on `bun`. Vite's bu
 
 ## Bun's flexibility
 - Speed aside, bun makes running TypeScript a pleasure
-- run.ts as single clear entry point
+- run.ts as single clear entry point, no blackbox scripts or commands
 
 ## React hot module reloads
 - Edit and save `client/App.tsx` to test component hot reloads
