@@ -64,14 +64,14 @@ function App(mainProps: MainProps) {
 
         <Title2>Sane server-side rendering</Title2>
         <ul>
-          <li>SSR is done with explicit code, no framework magic</li>
+          <li>SSR is done with explicit code, no framework magic: <Code>index.html</Code> is generated in <Code>run.ts</Code></li>
           <li>Enabled by default, with entry point in <Code>server/ssr.tsx</Code></li>
         </ul>
 
         <Title2>Express & socket.io</Title2>
         <ul>
-          <li>Express router in <Code>server/http.ts</Code></li>
-          <li>Socket.io setup in <Code>server/sockets.ts</Code></li>
+          <li>Express router in <Code>server/apis/http.ts</Code></li>
+          <li>Socket.io setup in <Code>server/apis/sockets.ts</Code></li>
         </ul>
         <InnerCard>
           <Title2>Instructions</Title2>
