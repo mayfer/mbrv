@@ -9,7 +9,8 @@ This is a single full-stack TypeScript boilerplate that runs on `bun`. Vite's bu
 
  * `bun dev` provides hot reloads & source maps
  * `bun prod` builds & serves production
- * `bun run.ts` to run without any build process
+ * `bun run build` to build for production
+ * `bun run.ts` to run without build step
 
 
 ## Single port convenience
