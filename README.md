@@ -33,6 +33,6 @@ MBRV runs on a single `bun` process without sacrificing dev or prod features, su
 - Enabled by default, with all relevant code in `run.ts` & `server/ssr.tsx`
 
 ## Express & socket.io
-- Express router in `server/http.ts`
-- Socket.io setup in `server/sockets.ts`
+- Express router in `server/apis/http.ts`
+- Socket.io setup in `server/apis/sockets.ts`
 
