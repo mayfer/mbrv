@@ -21,7 +21,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 async function createServer() {
   const app = express()
-  app.use(compression());
+  // start socket.io server on same server instance
+  const http_server = http.createServer(app);
+  const io = new Server(http_server, {
+    // cors: {
+    //   origin: '*',
+    // },
+  });
+  setup_sockets(io);
+  setup_routes(app, io);
 
   // Create Vite server in middleware mode and configure the app type as
   // 'custom', disabling Vite's own HTML serving logic so parent server
@@ -34,21 +42,13 @@ async function createServer() {
           hmr: mode === 'development',
         },
         base: '/',
+        clearScreen: false,
   })
 
   if (mode === 'production') {
     app.use('/client', express.static(path.resolve(__dirname, 'dist')))
   }
 
-  // start socket.io server on same server instance
-  const http_server = http.createServer(app);
-  const io = new Server(http_server, {
-    // cors: {
-    //   origin: '*',
-    // },
-  });
-  setup_sockets(io);
-  setup_routes(app, io);
 
   // Use vite's connect instance as middleware. If you use your own
   // express router (express.Router()), you should use router.use
@@ -78,30 +78,31 @@ async function createServer() {
     // next()
   })
 
-  if(mode === 'development') {
-    app.use(vite.middlewares)
-  }
 
-  app.use('*', async (req, res, next) => {
+  app.get('*', async (req, res, next) => {
     const url = req.originalUrl
+
+    const skip_prefixes = ['/client', '/node_modules', '/@vite', '/@react-refresh'];
+    if (skip_prefixes.some(prefix => url.startsWith(prefix))) {
+      return next();
+    }
+
     const initial_state = await getMainProps(req);
   
     try {
-      // 1. Read index.html
       let template = fs.readFileSync(
-        // path.resolve(__dirname, './index.html'),
         path.resolve(__dirname, mode === 'production' ? './dist/index.html' : './index.html'),
         'utf-8',
       )
   
-      // 2. Apply Vite HTML transforms. This injects the Vite HMR client,
+      // Apply Vite HTML transforms. This injects the Vite HMR client,
       //    and also applies HTML transforms from Vite plugins, e.g. global
       //    preambles from @vitejs/plugin-react
       if(mode === 'development') {
         template = await vite.transformIndexHtml(url, template)
       }
   
-      // 3a. Load the server entry. ssrLoadModule automatically transforms
+      // Load the server entry. ssrLoadModule automatically transforms
       //    ESM source code to be usable in Node.js! There is no bundling
       //    required, and provides efficient invalidation similar to HMR.
       
@@ -135,6 +136,10 @@ async function createServer() {
       next(e)
     }
   })
+
+  if(mode === 'development') {
+    app.use(vite.middlewares)
+  }
 
   http_server.listen(port, () => {
     console.log(`Server listening on http://localhost:${port}`)
