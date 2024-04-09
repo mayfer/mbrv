@@ -9,7 +9,8 @@ const argv = yargs(hideBin(process.argv))
     })
     .option('mode', {
         default: 'development',
-        describe: 'Server mode (development or production)'
+        describe: 'Server mode',
+        choices: ['development', 'production']
     })
     .option('ssr', {
         default: true,
@@ -18,7 +19,6 @@ const argv = yargs(hideBin(process.argv))
     })
     .argv;
 
-// only show args listed in the help text, avoid _ and $0
 console.log('Running with args:');
 for (const [key, value] of Object.entries(argv)) {
     if (key !== '_' && key !== '$0') {
