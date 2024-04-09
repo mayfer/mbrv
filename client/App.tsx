@@ -5,6 +5,7 @@ import { Button, Card, InnerCard, Code, Container, Title, Title2 } from './Eleme
 import io from 'socket.io-client';
 // @ts-ignore
 import logo from './assets/picnic.svg';
+import './App.css';
 
 function App(mainProps: MainProps) {
   const greeting = mainProps.greeting;

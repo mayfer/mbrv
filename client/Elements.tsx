@@ -8,7 +8,6 @@ export const Container = styled.div`
   justify-content: center;
   min-height: 100vh;
   font-family: monospace;
-  background-color: #f0f0f0;
   line-height: 1.6;
 `;
 

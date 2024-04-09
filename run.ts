@@ -1,39 +1,30 @@
-
-import express from "express";
-import compression from "compression";
-import http from "http";
-import { Server } from "socket.io";
-import args from "server/args";
-import { setup_routes } from "server/apis/http";
-import { setup_sockets } from "server/apis/sockets";
-
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import express from "express";
+import http from "http";
+import { Server as SocketIOServer } from "socket.io";
 import { createServer as createViteServer } from 'vite'
 
+// app specific imports
+import args from "server/args";
+import { setup_routes } from "server/apis/http";
+import { setup_sockets } from "server/apis/sockets";
 import { getMainProps } from "server/main_props";
 
 const port = args.port;
-const mode = args.mode;
+const mode = args.mode; // development or production
+const ssr_enabled = args.ssr;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 async function createServer() {
   const app = express()
-  // start socket.io server on same server instance
+
   const http_server = http.createServer(app);
-  const io = new Server(http_server, {
-    // cors: {
-    //   origin: '*',
-    // },
-  });
+  const io = new SocketIOServer(http_server, {});
   setup_sockets(io);
   setup_routes(app, io);
-
-  // Create Vite server in middleware mode and configure the app type as
-  // 'custom', disabling Vite's own HTML serving logic so parent server
-  // can take control
 
   const vite = await createViteServer({
         appType: 'custom',
@@ -49,13 +40,7 @@ async function createServer() {
     app.use('/client', express.static(path.resolve(__dirname, 'dist')))
   }
 
-
-  // Use vite's connect instance as middleware. If you use your own
-  // express router (express.Router()), you should use router.use
-  // When the server restarts (for example after the user modifies
-  // vite.config.js), `vite.middlewares` is still going to be the same
-  // reference (with a new internal stack of Vite and plugin-injected
-  // middlewares). The following is valid even after restarts.
+  // vite exposes all files at root by default, this is to prevent accessing server files
   app.use(async (req, res, next) => {
     const url = req.originalUrl
     let cleaned_url = url.split('?')[0]
@@ -75,7 +60,6 @@ async function createServer() {
         next();
       }
     }
-    // next()
   })
 
 
@@ -94,7 +78,7 @@ async function createServer() {
         path.resolve(__dirname, mode === 'production' ? './dist/index.html' : './index.html'),
         'utf-8',
       )
-  
+
       // Apply Vite HTML transforms. This injects the Vite HMR client,
       //    and also applies HTML transforms from Vite plugins, e.g. global
       //    preambles from @vitejs/plugin-react
@@ -102,33 +86,27 @@ async function createServer() {
         template = await vite.transformIndexHtml(url, template)
       }
   
-      // Load the server entry. ssrLoadModule automatically transforms
-      //    ESM source code to be usable in Node.js! There is no bundling
-      //    required, and provides efficient invalidation similar to HMR.
-      
-      const { render } = await vite.ssrLoadModule('/server/ssr.tsx')
+      let html = '';
 
-      // 3b. Since Vite 5.1, you can use the experimental createViteRuntime API
-      //    instead.
-      //    It fully supports HMR and works in a simillar way to ssrLoadModule
-      //    More advanced use case would be creating a runtime in a separate
-      //    thread or even a different machine using ViteRuntime class
-      // const runtime = await vite.createViteRuntime(vite)
-      // const { render } = await runtime.executeEntrypoint('/src/entry-server.js')
-  
-      // 4. render the app HTML. This assumes entry-server.js's exported
-      //     `render` function calls appropriate framework SSR APIs,
-      //    e.g. ReactDOMServer.renderToString()
-      
-      const {body, head} = await render(url, initial_state)
+      if(ssr_enabled) {
+        // ssr.tsx exports render() which returns a string body (and other metadata)
+        const { render } = await vite.ssrLoadModule('/server/ssr.tsx')
+        
+        const ssr_parts = await render(url, initial_state);
+        const {body, head} = ssr_parts;
 
-      // 5. Inject the app-rendered HTML into the template.
-      const html = template.replace(`<!--ssr-outlet-->`, body)
-        .replace(`<!--ssr-head-->`, head)
-        .replace(`'<!--ssr-state-->'`, JSON.stringify(initial_state))
-  
-      // 6. Send the rendered HTML back.
+        // Inject the app-rendered HTML & head tags (for css etc) into the template.
+        html = template.replace(`<!--ssr-outlet-->`, body)
+          .replace(`<!--ssr-head-->`, head)
+          .replace(`'<!--ssr-state-->'`, JSON.stringify(initial_state))
+      } else {
+        html = template.replace(`<!--ssr-outlet-->`, '')
+          .replace(`<!--ssr-head-->`, '')
+          .replace(`'<!--ssr-state-->'`, '{}')
+      }
+
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
+      
     } catch (e) {
       // If an error is caught, let Vite fix the stack trace so it maps back
       // to your actual source code.
