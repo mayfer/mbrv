@@ -3,7 +3,6 @@ import { Greeting, SocketTester } from 'shared/types';
 import { MainProps } from 'shared/main_props';
 import { Button, Card, InnerCard, Code, Container, Title, Title2 } from './Elements';
 import io from 'socket.io-client';
-// @ts-ignore
 import logo from './assets/picnic.svg';
 import './App.css';
 
@@ -14,7 +13,6 @@ function App(mainProps: MainProps) {
   const [count, setCount] = useState<number>(0);
 
   useEffect(() => {
-    // setup socket.io
     const socket = io();
     socket.on('connect', () => {
       console.log('connected to socket.io');

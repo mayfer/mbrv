@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon --exec 'bun run.ts' --watch server --watch shared --watch *.ts --ext ts,tsx,js,mjs,json",
-    "build": "vite build",
-    "prod": "vite build && bun run.ts --mode=production",
+    "build": "vite build --outDir=dist/server --ssr server/ssr.tsx  --config config/vite.config.ts && vite build --outDir=dist/client --config config/vite.config.ts",
+    "prod": "bun run.ts --mode=production",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
