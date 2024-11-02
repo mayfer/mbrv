@@ -7,6 +7,7 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  box-sizing: border-box;
   font-family: monospace;
   line-height: 1.6;
   background-color: #333;
@@ -35,6 +36,8 @@ export const Card = styled.div`
 
 export const Title = styled.h1`
   font-size: 3rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 0px 30px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.5), 0 0 5px rgba(0, 255, 0, 1);
 `;
 
 export const Title1 = styled.h1`

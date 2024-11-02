@@ -19,6 +19,11 @@ const CloneGithub = styled.a`
   text-decoration: none !important;
 `;
 
+const Title3 = styled(Title2)`
+  font-weight: normal;
+  color: #ffffffaa;
+`;
+
 function Demo(mainProps: MainProps) {
   const greeting = mainProps.greeting;
   const [serverGreeting, setServerGreeting] = useState<Greeting>(greeting);
@@ -42,9 +47,9 @@ function Demo(mainProps: MainProps) {
 
   return (
     <Container>
-      <Title>MBRV</Title>
-      <Title2>Murat's Bun, React & Vite template</Title2>
-      <Title2>Easiest way to Use TypeScript on both client & server</Title2>
+      <Title>mbrv.org</Title>
+      <Title3>Murat's Bun, React & Vite template</Title3> 
+      <Title2 style={{color: 'rgb(255 255 255)', textShadow: '0 0 20px rgba(255, 142, 30, 1)'}}>Easiest way to Use TypeScript on both client & server</Title2>
       <Title2>
         <CloneGithub href='https://github.com/mayfer/mbrv'>
           <GithubIcon /> Clone on GitHub
