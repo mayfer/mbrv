@@ -10,7 +10,6 @@ export const Container = styled.div`
   box-sizing: border-box;
   font-family: monospace;
   line-height: 1.6;
-  background-color: #333;
   color: #aaa;
 
   & a {
@@ -63,7 +62,6 @@ export const Button = styled.span`
   cursor: pointer;
   user-select: none;
   color: #dddddd;
-
     &:hover {
         background-color: #f0f0ff55;
     }

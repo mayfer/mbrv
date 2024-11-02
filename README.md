@@ -8,7 +8,7 @@ Most TypeScript bundlers that support UI hot reloads require running server & cl
 MBRV runs on a single `bun` process without sacrificing dev or prod features, such as hot reloads or server-side rendering.
 
  * `bun run dev` provides hot reloads & source maps
- * `bun run build` builds only (into `dist/`)
+ * `bun run build` builds optimized version (into `dist/`)
  * `bun run prod` run optimized build
  * `bun run.ts --help` to run without bundlers or hot reloads
 

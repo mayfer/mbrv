@@ -26,6 +26,7 @@
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
     "styled-components": "^6.1.8",
+    "wouter": "^3.3.5",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
