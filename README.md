@@ -7,31 +7,40 @@ Most TypeScript bundlers that support UI hot reloads require running server & cl
 
 MBRV runs on a single `bun` process without sacrificing dev or prod features, such as hot reloads or server-side rendering.
 
- * `bun run dev` provides hot reloads & source maps
- * `bun run build` builds optimized version (into `dist/`)
- * `bun run prod` run optimized build
- * `bun run.ts --help` to run without bundlers or hot reloads
+# Instructions
+
+## Setup
+- `bun i` to install packages
+- `bun run dev` provides hot reloads & source maps
+- `bun run build` prepares production build
+- `bun run prod` serves production
+
+## Make changes
+- `client/` contains React UI code
+- `shared/` folder contains shared interfaces, types, and functions that both client & server can use
+- `server/` contains http & socket APIs
+  - Express endpoints in `server/apis/http.ts`
+  - Socket.io setup in `server/apis/sockets.ts`
+
+# Benefits
 
 ## Single port convenience
-- Server and client run on the same port
+- Server & client run on the same process, same port
 - No proxies or CORS issues
 
 ## Bun's flexibility
-- Speed aside, bun makes running TypeScript a pleasure
-- run.ts as single clear entry point, no blackbox scripts or commands
+- Speed aside, bun makes it a pleasure to run TypeScript without a transpiler
+- `run.ts` as single entry point
 
 ## React hot module reloads
-- Edit and save `client/App.tsx` to test component hot reloads
-- Server will also reload when `server/` or `shared/` are saved, using nodemon to restart the bun process
+- UI code changes appear instantly in the browser
+- Page will reload if any server code is changed
 
 ## Shared files
-- Server & client can use shared interfaces, types, and functions via `shared/` folder
+- Server & client can use shared TypeScript interfaces, types, and functions via `shared/` folder
 
 ## Sane server-side rendering
 - SSR is done with explicit code, no framework magic
-- Enabled by default, with all relevant code in `run.ts` & `server/ssr.tsx`
-
-## Express & socket.io
-- Express router in `server/apis/http.ts`
-- Socket.io setup in `server/apis/sockets.ts`
+- Enabled by default, with entry point in `server/ssr.tsx`
+- Use `--ssr=false` to disable SSR
 

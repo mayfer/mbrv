@@ -79,6 +79,7 @@ function Demo(mainProps: MainProps) {
       <CardsContainer>
         <Card>
           <Title1>Benefits</Title1>
+
           <Title2>Single port convenience</Title2>
           <ul>
             <li>Server & client run on the same process, same port</li>
