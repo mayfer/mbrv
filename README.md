@@ -1,13 +1,9 @@
 # [mbrv.org](https://mbrv.org): Murat's Bun, React & Vite template
 by [murat](https://twitter.com/mayfer)
 
-# Intro
-
 Most TypeScript bundlers that support UI hot reloads require running server & client on different processes/ports, leading to a cascade of problems.
 
 MBRV runs on a single `bun` process without sacrificing dev or prod features, such as hot reloads or server-side rendering.
-
-# Instructions
 
 ## Setup
 - `bun i` to install packages
