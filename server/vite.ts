@@ -41,14 +41,14 @@ export async function createServer() {
   let vite;
   if(mode === 'development') {
     vite = await createViteServer({
-          appType: 'custom',
-          server: {
-            middlewareMode: true,
-            hmr: mode === 'development',
-          },
-          base: '/',
-          clearScreen: false,
+        configFile: path.resolve(__dirname, '../config/vite.config.ts'),
+        server: {
+          middlewareMode: true,
+          hmr: mode === 'development',
+        },
+        base: '/',
     })
+    console.log('Vite server created, base: ', vite.config.base)
   } else if (mode === 'production') {
     app.use('/client', express.static(client_dir_prod))
   }
@@ -81,6 +81,7 @@ export async function createServer() {
 
     const skip_prefixes = [
       '/client',
+      '/shared',
       '/node_modules',
       '/@vite',
       '/@react-refresh',
@@ -106,7 +107,7 @@ export async function createServer() {
       let html = '';
 
       if(ssr_enabled && mode === 'development') {
-        const { render } = await vite.ssrLoadModule('/server/ssr.tsx')
+        const { render } = await vite.ssrLoadModule(ssr_path_dev)
         
         const ssr_parts = await render(url, initial_state);
         const {body, head} = ssr_parts;

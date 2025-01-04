@@ -4,15 +4,13 @@ import react from '@vitejs/plugin-react'
 
 console.log('Loading vite config from config/vite.config.ts...');
 
-
-// this file is needed for React hot reloads
-const mode = "production";
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/client/',
   root: path.resolve(__dirname, '../'),
+  appType: 'custom',
+  base: '/client/', // dev mode will override this as '/' in vite.ts
+  clearScreen: false,
   build: {
     outDir: '../dist/',
     rollupOptions: {
