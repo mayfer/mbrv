@@ -12,7 +12,7 @@ import { setup_routes } from "server/apis/http";
 import { setup_sockets } from "server/apis/sockets";
 import { getMainProps } from "server/main_props";
 
-const port: number = args.port;
+const preferred_port: number = args.port;
 const mode: 'development' | 'production' = args.mode;
 const ssr_enabled: boolean = args.ssr;
 
@@ -23,6 +23,35 @@ const index_html_path_prod = path.resolve(__dirname, '../dist/client/client/inde
 const ssr_path_dev = path.resolve(__dirname, '../server/ssr.tsx');
 const ssr_path_prod = path.resolve(__dirname, '../dist/server/ssr.js');
 const client_dir_prod = path.resolve(__dirname, '../dist/client');
+
+function listenOnAvailablePort(server: http.Server, preferredPort: number): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const tryPort = (port: number) => {
+      const onError = (error: NodeJS.ErrnoException) => {
+        server.removeListener('listening', onListening)
+
+        if (error.code === 'EADDRINUSE') {
+          console.warn(`Port ${port} is busy; trying ${port + 1}...`)
+          tryPort(port + 1)
+          return
+        }
+
+        reject(error)
+      }
+
+      const onListening = () => {
+        server.removeListener('error', onError)
+        resolve(port)
+      }
+
+      server.once('error', onError)
+      server.once('listening', onListening)
+      server.listen(port)
+    }
+
+    tryPort(preferredPort)
+  })
+}
 
 export async function createServer() {
   if(mode === 'production') {
@@ -44,7 +73,8 @@ export async function createServer() {
         configFile: path.resolve(__dirname, '../config/vite.config.ts'),
         server: {
           middlewareMode: true,
-          hmr: mode === 'development',
+          // Share the application server instead of opening a second HMR port.
+          hmr: { server: http_server },
         },
         base: '/',
     })
@@ -143,9 +173,8 @@ export async function createServer() {
     app.use(vite.middlewares)
   }
 
-  http_server.listen(port, () => {
-    console.log(`Server listening on http://localhost:${port}`)
-  })
+  const port = await listenOnAvailablePort(http_server, preferred_port)
+  console.log(`Server and HMR listening on http://localhost:${port}`)
 
   return app
 }
