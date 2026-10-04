@@ -67,14 +67,18 @@ export async function createServer() {
   setup_sockets(io);
   setup_routes(app, io);
 
+  // Bind first so dev HMR uses the port this instance actually got.
+  const port = await listenOnAvailablePort(http_server, preferred_port)
+
   let vite;
   if(mode === 'development') {
     vite = await createViteServer({
         configFile: path.resolve(__dirname, '../config/vite.config.ts'),
         server: {
           middlewareMode: true,
+          port,
           // Share the application server instead of opening a second HMR port.
-          hmr: { server: http_server },
+          hmr: { server: http_server, clientPort: port },
         },
         base: '/',
     })
@@ -173,7 +177,6 @@ export async function createServer() {
     app.use(vite.middlewares)
   }
 
-  const port = await listenOnAvailablePort(http_server, preferred_port)
   console.log(`Server and HMR listening on http://localhost:${port}`)
 
   return app
